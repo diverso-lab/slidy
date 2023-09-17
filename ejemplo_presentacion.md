@@ -31,6 +31,3 @@ Recapitulación de todo lo discutido en la presentación y cierre.
 
 ### Próximos pasos
 Esbozar lo que está por venir para Transformo y cómo seguirá siendo relevante en el futuro.
-
-## ¡Gracias!
-Esperamos que hayan disfrutado y aprendido con esta presentación.

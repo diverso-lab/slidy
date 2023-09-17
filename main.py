@@ -27,22 +27,64 @@ def replace_text_while_keeping_format(shape, placeholder, new_text):
                     run.text = run.text.replace(placeholder, new_text)
 
 
+def duplicate_and_highlight_index(prs, sections, current_section):
+    """Duplica el slide del índice, actualiza los títulos de las secciones y resalta la sección actual."""
+    slide = duplicate_slide(prs, 2)  # Duplicamos el tercer slide (índice)
+
+    # Buscamos el shape que contiene el identificador #item_list
+    for shape in slide.shapes:
+        if shape.has_text_frame:
+            paragraphs = shape.text_frame.paragraphs
+            for paragraph in paragraphs:
+                if "#item_list" in paragraph.text:
+                    # Guardamos las propiedades originales del run
+                    original_run = paragraph.runs[0]
+                    original_font_name = original_run.font.name
+                    original_font_size = original_run.font.size
+                    try:
+                        original_font_color = original_run.font.color.rgb
+                    except AttributeError:
+                        original_font_color = None  # Si el color no se define en términos de RGB
+
+                    # Eliminamos el placeholder original
+                    shape.text_frame._element.remove(paragraph._element)
+
+                    # Agregamos cada sección con el estilo original
+                    for index, section in enumerate(sections, 1):  # index empieza en 1
+                        new_paragraph = shape.text_frame.add_paragraph()
+                        new_run = new_paragraph.add_run()
+                        new_run.text = f"{index}. {section}"
+                        new_run.font.bold = True if section == current_section else False
+                        new_run.font.name = original_font_name
+                        new_run.font.size = original_font_size
+                        if original_font_color:
+                            new_run.font.color.rgb = original_font_color
+
+    return slide
+
+
+
+
+
+
+
+
+
+
+
+
 def markdown_to_pptx_with_template(input_file, template_path):
-    # Lectura del archivo markdown y transformación a HTML
     with open(input_file, 'r') as f:
         content = f.read()
     html_content = markdown.markdown(content)
     soup = BeautifulSoup(html_content, 'html.parser')
 
-    # Extracción de información de cabecera
     title = soup.find('h1').get_text()
     authors_line = soup.find('h2').get_text()
     workshop = soup.find('h3').get_text()
 
-    # Carga de la plantilla en Python
     prs = Presentation(template_path)
 
-    # Rellenar todas las diapositivas con #main_title, #authors, y #workshop
     for slide in prs.slides:
         for shape in slide.shapes:
             if shape.has_text_frame:
@@ -50,25 +92,29 @@ def markdown_to_pptx_with_template(input_file, template_path):
                 replace_text_while_keeping_format(shape, "#authors", authors_line.replace("Authors:", "").strip())
                 replace_text_while_keeping_format(shape, "#workshop", workshop)
 
-    # Primero, calculamos el total de diapositivas de contenido
     total_content_slides = sum(1 for section in soup.find_all('h2')[1:] for _ in section.find_all_next('h3'))
 
-    # Crear diapositivas de contenido
-    sections = soup.find_all('h2')[1:]  # Excluir el primer h2 que son autores
+    sections = soup.find_all('h2')[1:]
+    section_titles = [section.get_text() for section in sections]
     section_counter = 1
-    content_slide_counter = 0  # Añadimos un contador para las diapositivas de contenido
+    content_slide_counter = 0
 
+    # Luego, al crear las diapositivas de contenido y el índice:
     for section in sections:
+        # Creamos el slide del índice y lo resaltamos para la sección actual
+        duplicate_and_highlight_index(prs, [s.get_text() for s in sections], section.get_text())
+        # (aquí va el resto del código para crear las diapositivas de contenido)
+
         subtitles = section.find_all_next('h3')
         subtitle_counter = 1
         for subtitle in subtitles:
-            slide = duplicate_slide(prs, 1)  # Duplicamos la segunda diapositiva
-            content_slide_counter += 1  # Incrementamos el contador de diapositivas de contenido
+            slide = duplicate_slide(prs, 1)
+            content_slide_counter += 1
             for shape in slide.shapes:
                 if shape.has_text_frame:
                     section_title = f"{section_counter}. {section.get_text()}"
                     section_subtitle = f"{section_counter}.{subtitle_counter}. {subtitle.get_text()}"
-                    slide_number_format = f"{content_slide_counter:02} - {total_content_slides:02}"  # Formato XX - YY
+                    slide_number_format = f"{content_slide_counter:02} - {total_content_slides:02}"
 
                     replace_text_while_keeping_format(shape, "#section_title", section_title)
                     replace_text_while_keeping_format(shape, "#section_subtitle", section_subtitle)
@@ -77,12 +123,10 @@ def markdown_to_pptx_with_template(input_file, template_path):
             subtitle_counter += 1
         section_counter += 1
 
-    # Eliminar el slide base (el segundo slide en este caso)
     slide_id = prs.slides._sldIdLst[1].rId
     prs.part.drop_rel(slide_id)
     del prs.slides._sldIdLst[1]
 
-    # Guardar
     output_path = "output.pptx"
     prs.save(output_path)
     print(f"Presentación guardada en {output_path}")
