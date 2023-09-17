@@ -16,6 +16,12 @@ Puedes instalarlos con pip:
 pip install python-pptx markdown beautifulsoup4
 ```
 
+También se pueden instalar todos a la vez:
+
+```bash
+pip install -r requirements.txt
+```
+
 ## Uso
 
 Para utilizar el script:
