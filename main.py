@@ -29,7 +29,7 @@ def replace_text_while_keeping_format(shape, placeholder, new_text):
 
 def duplicate_and_highlight_index(prs, sections, current_section):
     """Duplica el slide del índice, actualiza los títulos de las secciones y resalta la sección actual."""
-    slide = duplicate_slide(prs, 2)  # Duplicamos el tercer slide (índice)
+    slide = duplicate_slide(prs, 1)  # Duplicamos el tercer slide (índice)
 
     # Buscamos el shape que contiene el identificador #item_list
     for shape in slide.shapes:
@@ -63,16 +63,6 @@ def duplicate_and_highlight_index(prs, sections, current_section):
     return slide
 
 
-
-
-
-
-
-
-
-
-
-
 def markdown_to_pptx_with_template(input_file, template_path):
     with open(input_file, 'r') as f:
         content = f.read()
@@ -99,7 +89,6 @@ def markdown_to_pptx_with_template(input_file, template_path):
     section_counter = 1
     content_slide_counter = 0
 
-    # Luego, al crear las diapositivas de contenido y el índice:
     for section in sections:
         # Creamos el slide del índice y lo resaltamos para la sección actual
         duplicate_and_highlight_index(prs, [s.get_text() for s in sections], section.get_text())
@@ -108,7 +97,7 @@ def markdown_to_pptx_with_template(input_file, template_path):
         subtitles = section.find_all_next('h3')
         subtitle_counter = 1
         for subtitle in subtitles:
-            slide = duplicate_slide(prs, 1)
+            slide = duplicate_slide(prs, 2)
             content_slide_counter += 1
             for shape in slide.shapes:
                 if shape.has_text_frame:
@@ -126,6 +115,8 @@ def markdown_to_pptx_with_template(input_file, template_path):
     slide_id = prs.slides._sldIdLst[1].rId
     prs.part.drop_rel(slide_id)
     del prs.slides._sldIdLst[1]
+    del prs.slides._sldIdLst[1]
+
 
     output_path = "output.pptx"
     prs.save(output_path)
