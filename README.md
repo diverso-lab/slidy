@@ -56,7 +56,6 @@ chmod +x update_dependencies.sh && ./update_dependencies.sh
 
 Nota: es responsabilidad del desarrollador comprobar que la actualización de dependencias no ha roto ninguna funcionalidad y cada dependencia mantiene la compatibilidad con versiones anteriores. ¡Utilice el script con cuidado!
 
-Traducción realizada con la versión gratuita del traductor www.DeepL.com/Translator
 ## Contribuciones
 
 Si encuentras algún problema o tienes sugerencias de mejoras, no dudes en abrir un Issue o Pull Request en este repositorio.
