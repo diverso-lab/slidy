@@ -46,6 +46,17 @@ El script toma el archivo en formato Markdown y busca títulos y subtítulos, lo
 
 Utiliza una plantilla de PowerPoint predefinida, donde se espera que ciertos placeholders, como `#main_title`, estén presentes para ser reemplazados con el contenido apropiado del archivo Markdown.
 
+## Actualizar dependencias
+
+Para actualizar todas las dependencias del proyecto automáticamente, ejecute:
+
+```
+chmod +x update_dependencies.sh && ./update_dependencies.sh
+```
+
+Nota: es responsabilidad del desarrollador comprobar que la actualización de dependencias no ha roto ninguna funcionalidad y cada dependencia mantiene la compatibilidad con versiones anteriores. ¡Utilice el script con cuidado!
+
+Traducción realizada con la versión gratuita del traductor www.DeepL.com/Translator
 ## Contribuciones
 
 Si encuentras algún problema o tienes sugerencias de mejoras, no dudes en abrir un Issue o Pull Request en este repositorio.
