@@ -4,19 +4,7 @@ Este script convierte un archivo en formato Markdown a una presentación de Powe
 
 ## Requisitos
 
-Para ejecutar este script, es necesario tener instalados los siguientes paquetes:
-
-- `pptx`: para trabajar con archivos de PowerPoint.
-- `markdown`: para procesar archivos en formato Markdown.
-- `bs4` (BeautifulSoup): para procesar el HTML generado por el parser de Markdown.
-
-Puedes instalarlos con pip:
-
-```bash
-pip install python-pptx markdown beautifulsoup4
-```
-
-También se pueden instalar todos a la vez:
+Para ejecutar este script, es necesario tener instaladas las dependencias:
 
 ```bash
 pip install -r requirements.txt
@@ -24,10 +12,7 @@ pip install -r requirements.txt
 
 ## Uso
 
-Para utilizar el script:
-
-1. Asegúrate de que el archivo `ejemplo_presentacion.md` y la plantilla `plantilla.pptx` se encuentren en el mismo directorio que el script.
-2. Ejecuta el script:
+Para utilizar el script, segúrate de que el archivo `ejemplo_presentacion.md` y la plantilla `plantilla.pptx` se encuentren en el mismo directorio que el script, así como todas las imágenes
 
 ```bash
 python main.py
